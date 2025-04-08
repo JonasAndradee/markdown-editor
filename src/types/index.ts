@@ -15,7 +15,7 @@ export interface LocalEdit {
 }
 
 export interface SidebarItem {
-  type: "category" | "doc";
+  type: string;
   label: string;
   items?: SidebarItem[];
   id?: string;

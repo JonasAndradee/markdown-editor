@@ -1,15 +1,23 @@
 import React from "react";
 import { useMarkdownStore } from "../store";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import { useMarkdownFile } from "../hooks";
+import { formatDate } from "../utils/markdown";
 
 const MarkdownViewer: React.FC = () => {
-  const { currentFile, isLoading, isEditing, setEditMode } = useMarkdownStore();
+  const { isEditing, setEditMode } = useMarkdownStore();
+
+  const { file, isLoading, error } = useMarkdownFile();
 
   if (isLoading) {
     return <div className="loading">Loading document...</div>;
   }
 
-  if (!currentFile) {
+  if (error) {
+    return <div className="error-state">{error}</div>;
+  }
+
+  if (!file) {
     return (
       <div className="empty-state">
         Select a document from the sidebar to view it.
@@ -18,23 +26,34 @@ const MarkdownViewer: React.FC = () => {
   }
 
   const renderContent = () => {
-    // Docusaurus has built-in markdown rendering that we'll use
-    // This is handled automatically when we pass markdown to the content
     return (
       <div className="markdown-container">
         <div className="markdown-header">
-          <h1>{currentFile.name}</h1>
-          {currentFile.isModified && (
-            <span className="modified-indicator">Modified locally</span>
-          )}
-          <button className="edit-button" onClick={() => setEditMode(true)}>
-            Edit
-          </button>
+          <h1>{file.name}</h1>
+          <div className="markdown-meta">
+            {file.isModified && (
+              <span className="modified-indicator">Modified locally</span>
+            )}
+            <span className="date-indicator">
+              Last updated: {formatDate(file.lastModified)}
+            </span>
+            <button className="edit-button" onClick={() => setEditMode(true)}>
+              Edit
+            </button>
+          </div>
         </div>
-        <div
-          className="markdown-content"
-          dangerouslySetInnerHTML={{ __html: currentFile.content }}
-        />
+        <div className="markdown-content">
+          <BrowserOnly>
+            {() => {
+              const { MDXContent } = require("@theme/MDXContent");
+              return (
+                <MDXContent>
+                  <div dangerouslySetInnerHTML={{ __html: file.content }} />
+                </MDXContent>
+              );
+            }}
+          </BrowserOnly>
+        </div>
       </div>
     );
   };

@@ -55,6 +55,34 @@
   color: var(--ifm-color-primary);
 }
 
+.sidebar-category {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-category-label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.sidebar-items.nested {
+  padding-left: 1rem;
+  border-left: 1px solid var(--ifm-toc-border-color);
+}
+
+.modified-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: #f1c40f;
+  font-weight: bold;
+}
+
+.sidebar-loading {
+  padding: 1rem;
+  color: var(--ifm-color-emphasis-600);
+  font-style: italic;
+}
+
 /* Markdown viewer styling */
 .markdown-container {
   padding: 1rem;
@@ -73,6 +101,19 @@
   margin-bottom: 0;
 }
 
+.modified-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: #f1c40f;
+  font-weight: bold;
+}
+
+.sidebar-loading {
+  padding: 1rem;
+  color: var(--ifm-color-emphasis-600);
+  font-style: italic;
+}
+
 .edit-button, .save-button, .discard-button {
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -85,6 +126,17 @@
 .edit-button {
   background-color: var(--ifm-color-primary);
   color: white;
+}
+
+.editor-container {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.editor-header {
+  background-color: var(--ifm-color-emphasis-200);
+  padding: 1rem;
 }
 
 .save-button {
