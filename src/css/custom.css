@@ -21,43 +21,99 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-.edit-mode {
-  background-color: rgba(255, 255, 0, 0.1);
-  border-left: 3px solid var(--ifm-color-primary);
-  padding-left: 1rem;
+/* Sidebar styling */
+.sidebar-container {
+  padding: 1rem;
+  border-right: 1px solid var(--ifm-toc-border-color);
+  height: 100%;
 }
 
-.editor-container {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 20px;
+.sidebar-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
 }
 
-.modified-indicator {
-  display: inline-block;
-  padding: 2px 8px;
+.sidebar-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  padding: 0.5rem 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sidebar-item:hover {
+  color: var(--ifm-color-primary);
+}
+
+.sidebar-item.active {
+  font-weight: bold;
+  color: var(--ifm-color-primary);
+}
+
+/* Markdown viewer styling */
+.markdown-container {
+  padding: 1rem;
+}
+
+.markdown-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.markdown-header h1 {
+  margin-right: auto;
+  margin-bottom: 0;
+}
+
+.edit-button, .save-button, .discard-button {
+  padding: 0.5rem 1rem;
   border-radius: 4px;
-  background-color: #ffd700;
-  color: #000;
-  font-size: 0.8rem;
-  margin-left: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  margin-left: 0.5rem;
 }
 
-.diff-view {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
-  margin-top: 20px;
+.edit-button {
+  background-color: var(--ifm-color-primary);
+  color: white;
 }
 
-.diff-added {
-  background-color: rgba(0, 255, 0, 0.1);
-  padding: 2px;
+.save-button {
+  background-color: #4CAF50;
+  color: white;
 }
 
-.diff-removed {
-  background-color: rgba(255, 0, 0, 0.1);
-  text-decoration: line-through;
-  padding: 2px;
+.discard-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.loading, .empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1.2rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 0.5rem;
 }
