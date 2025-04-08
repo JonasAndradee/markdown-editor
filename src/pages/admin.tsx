@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import Layout from "@theme/Layout";
 import { useMarkdownStore } from "@site/src/store";
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import { formatDistance } from "date-fns";
+import { useHistory } from "@docusaurus/router";
+import EditedFilesList from "@site/src/components/EditedFilesList";
 
 export default function Admin() {
   const { localEdits, fetchLocalEdits, fetchFile } = useMarkdownStore();
+  const history = useHistory();
 
   useEffect(() => {
     fetchLocalEdits();
@@ -13,93 +14,27 @@ export default function Admin() {
 
   const handleViewFile = (path: string) => {
     fetchFile(path);
-    window.location.href = "/";
-  };
-
-  const renderDiffViewer = (
-    originalContent: string,
-    modifiedContent: string
-  ) => {
-    return (
-      <BrowserOnly>
-        {() => {
-          const { createTwoFilesPatch } = require("diff");
-          const patch = createTwoFilesPatch(
-            "Original",
-            "Modified",
-            originalContent,
-            modifiedContent
-          );
-
-          return (
-            <pre className="diff-view">
-              {patch.split("\n").map((line: string, i: number) => {
-                let className = "";
-                if (line.startsWith("+")) className = "diff-added";
-                if (line.startsWith("-")) className = "diff-removed";
-
-                return (
-                  <div key={i} className={className}>
-                    {line}
-                  </div>
-                );
-              })}
-            </pre>
-          );
-        }}
-      </BrowserOnly>
-    );
+    // Extrair o caminho para navegação
+    const routePath = path.replace("/docs", "").replace(".md", "");
+    history.push(routePath);
   };
 
   return (
-    <Layout title="Admin" description="Administration area">
+    <Layout
+      title="Admin Area"
+      description="View and manage locally edited markdown files"
+    >
       <div className="container margin-vert--lg">
-        <h1>Administration</h1>
+        <div className="admin-header">
+          <h1>Administration</h1>
+          <p>
+            This area shows all markdown files that have been edited locally.
+            You can view the differences between the original and modified
+            versions.
+          </p>
+        </div>
 
-        {localEdits.length === 0 ? (
-          <div className="empty-state">No locally edited files found.</div>
-        ) : (
-          <>
-            <h2>Locally Modified Files</h2>
-            <div className="card-container">
-              {localEdits.map((edit, index) => (
-                <div key={index} className="card margin-bottom--md">
-                  <div className="card__header">
-                    <h3>{edit.name}</h3>
-                    <p className="text--small text--italic">
-                      Edited{" "}
-                      {formatDistance(new Date(edit.editedAt), new Date(), {
-                        addSuffix: true,
-                      })}
-                    </p>
-                  </div>
-                  <div className="card__body">
-                    <button
-                      className="button button--primary margin-right--sm"
-                      onClick={() => handleViewFile(edit.path)}
-                    >
-                      View Document
-                    </button>
-                    <button
-                      className="button button--secondary"
-                      onClick={() =>
-                        document
-                          .getElementById(`diff-${index}`)
-                          ?.classList.toggle("hidden")
-                      }
-                    >
-                      Show/Hide Changes
-                    </button>
-
-                    <div id={`diff-${index}`} className="margin-top--md hidden">
-                      {renderDiffViewer(edit.originalContent, edit.content)}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
+        <EditedFilesList edits={localEdits} onViewFile={handleViewFile} />
       </div>
     </Layout>
   );

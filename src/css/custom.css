@@ -270,6 +270,47 @@
   margin-bottom: 1rem;
 }
 
+/* Estilos para o diff viewer personalizado */
+.diff-container {
+  margin-top: 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.diff-columns {
+  display: flex;
+  width: 100%;
+}
+
+.diff-column {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.diff-column:first-child {
+  border-right: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.diff-header {
+  font-weight: bold;
+  padding: 0.5rem;
+  background-color: var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  font-size: 0.9rem;
+}
+
+.diff-content {
+  padding: 0.5rem;
+  margin: 0;
+  font-size: 0.85rem;
+  max-height: 300px;
+  overflow: auto;
+  line-height: 1.4;
+  background-color: var(--ifm-pre-background);
+}
+
 .diff-view {
   background-color: var(--ifm-pre-background);
   border-radius: 6px;
@@ -280,12 +321,85 @@
 }
 
 .diff-added {
-  background-color: rgba(0, 255, 0, 0.1);
-  padding: 2px;
+  background-color: rgba(46, 204, 113, 0.15);
 }
 
 .diff-removed {
-  background-color: rgba(255, 0, 0, 0.1);
+  background-color: rgba(231, 76, 60, 0.15);
   text-decoration: line-through;
-  padding: 2px;
+}
+
+.diff-unchanged {
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* Estilos para admin e diff viewer */
+.admin-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  padding-bottom: 1rem;
+}
+
+.list-description {
+  margin-bottom: 1.5rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.empty-edits {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: var(--ifm-color-emphasis-100);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.file-card {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.file-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.file-card-header {
+  background-color: var(--ifm-color-emphasis-200);
+  padding: 1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.file-card-header h3 {
+  margin-bottom: 0.25rem;
+  font-size: 1.1rem;
+}
+
+.file-card-date {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.file-card-actions {
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.file-card-diff {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  max-height: 400px;
+  overflow: auto;
 }
