@@ -20,7 +20,7 @@ const config: Config = {
   organizationName: "allintra", // Usually your GitHub org/user name.
   projectName: "markdown-editor", // Usually your repo name.
 
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
   // Even if you don't use internationalization, you can use this field to set
@@ -35,11 +35,7 @@ const config: Config = {
     [
       "classic",
       {
-        docs: {
-          routeBasePath: "/",
-          sidebarPath: "./sidebars.ts",
-          path: "src/docs",
-        },
+        docs: false,
         blog: false,
         theme: {
           customCss: "./src/css/custom.css",

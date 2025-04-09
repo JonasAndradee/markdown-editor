@@ -6,32 +6,25 @@ export const useMarkdownFile = () => {
   const location = useLocation();
   const { fetchFile, currentFile, isLoading } = useMarkdownStore();
   const [error, setError] = useState<string | null>(null);
+  const [hasInitialLoad, setHasInitialLoad] = useState(false);
 
   useEffect(() => {
-    const loadMarkdownFromPath = async () => {
-      try {
-        // Remove o primeiro caractere '/' e acrescenta '.md' se necessário
-        let path = location.pathname;
-        if (path === "/") {
-          path = "/homepage";
+    if (!hasInitialLoad) {
+      const loadInitialFile = async () => {
+        try {
+          await fetchFile("/docs/homepage.md");
+          setError(null);
+          setHasInitialLoad(true);
+        } catch (err) {
+          console.error("Error loading initial markdown file:", err);
+          setError("Failed to load initial document");
+          setHasInitialLoad(true);
         }
+      };
 
-        path = path.startsWith("/") ? path : `/${path}`;
-
-        if (!path.endsWith(".md")) {
-          path = `${path}.md`;
-        }
-
-        await fetchFile(`/docs${path}`);
-        setError(null);
-      } catch (err) {
-        console.error("Error loading markdown file:", err);
-        setError("Failed to load document");
-      }
-    };
-
-    loadMarkdownFromPath();
-  }, [location.pathname, fetchFile]);
+      loadInitialFile();
+    }
+  }, [fetchFile, hasInitialLoad]);
 
   return {
     file: currentFile,

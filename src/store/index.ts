@@ -7,9 +7,9 @@ import {
   getLocalEdits as getLSEdits,
 } from "../services/localStorageService";
 import { MarkdownFile, SidebarItem, LocalEdit } from "../types";
+import { parseSidebar } from "../utils/markdown";
 
 interface MarkdownStore {
-  // State
   currentFile: MarkdownFile | null;
   sidebarItems: SidebarItem[];
   isLoading: boolean;
@@ -17,7 +17,6 @@ interface MarkdownStore {
   editContent: string;
   localEdits: LocalEdit[];
 
-  // Actions
   fetchSidebar: () => Promise<void>;
   fetchFile: (path: string) => Promise<void>;
   setEditMode: (isEditing: boolean) => void;
@@ -38,42 +37,50 @@ export const useMarkdownStore = create<MarkdownStore>((set, get) => ({
   fetchSidebar: async () => {
     set({ isLoading: true });
     try {
-      // First, get the _sidebar.md file to build navigation
       const sidebarContent = await getFileContent("/docs/_sidebar.md");
 
-      // Parse the sidebar content to create navigation structure
-      const sidebarItems = parseSidebarContent(sidebarContent);
+      const items = parseSidebar(sidebarContent);
 
-      set({ sidebarItems, isLoading: false });
+      console.log("Sidebar items parsed:", items);
+
+      set({ sidebarItems: items, isLoading: false });
     } catch (error) {
       console.error("Error fetching sidebar:", error);
-      set({ isLoading: false });
+
+      set({
+        sidebarItems: [
+          { type: "doc", label: "Home", id: "/homepage" },
+          { type: "doc", label: "Getting Started", id: "/starting" },
+          { type: "doc", label: "Adapters", id: "/adapters" },
+          { type: "doc", label: "Providers", id: "/providers" },
+        ],
+        isLoading: false,
+      });
     }
   },
 
   fetchFile: async (path: string) => {
     set({ isLoading: true });
     try {
-      // Get the raw content from the API
-      const content = await getFileContent(path);
+      const normalizedPath = path.startsWith("/docs") ? path : `/docs/${path}`;
 
-      // Check if we have local edits
-      const localEdit = getLocalEdit(path);
+      const content = await getFileContent(normalizedPath);
 
-      const fileName = path.split("/").pop() || "";
+      const localEdit = getLocalEdit(normalizedPath);
 
-      // Determine if there are local modifications
+      const fileName = normalizedPath.split("/").pop() || "";
+
       const isModified = !!localEdit;
 
-      // Create the file object
       const file: MarkdownFile = {
-        path,
+        path: normalizedPath,
         name: fileName,
-        // If there's a local edit, use that content, otherwise use the original
         content: localEdit ? localEdit.content : content,
         lastModified: new Date().toISOString(),
         isModified,
       };
+
+      console.log("Loaded file:", file.name); // Debug
 
       set({
         currentFile: file,
@@ -111,7 +118,6 @@ export const useMarkdownStore = create<MarkdownStore>((set, get) => ({
       ? existingEdit.originalContent
       : currentFile.content;
 
-    // Create a local edit record
     const localEdit: LocalEdit = {
       path: currentFile.path,
       name: currentFile.name,
@@ -120,10 +126,8 @@ export const useMarkdownStore = create<MarkdownStore>((set, get) => ({
       editedAt: new Date().toISOString(),
     };
 
-    // Save to localStorage
     saveEdit(localEdit);
 
-    // Update the current file with modified status
     set({
       currentFile: {
         ...currentFile,
@@ -133,7 +137,6 @@ export const useMarkdownStore = create<MarkdownStore>((set, get) => ({
       isEditing: false,
     });
 
-    // Refresh the list of local edits
     get().fetchLocalEdits();
   },
 
@@ -142,7 +145,6 @@ export const useMarkdownStore = create<MarkdownStore>((set, get) => ({
 
     if (!currentFile) return;
 
-    // Just exit edit mode without saving
     set({
       isEditing: false,
       editContent: currentFile.content,
@@ -150,20 +152,17 @@ export const useMarkdownStore = create<MarkdownStore>((set, get) => ({
   },
 
   fetchLocalEdits: () => {
-    // Get all local edits from localStorage
     const edits = getLSEdits();
     set({ localEdits: edits });
   },
 }));
 
-// Helper function to parse the sidebar content into a navigation structure
 function parseSidebarContent(content: string): SidebarItem[] {
   const lines = content.split("\n").filter((line) => line.trim());
 
   const items: SidebarItem[] = [];
 
   lines.forEach((line) => {
-    // Match markdown links: * [Link Text](/path)
     const match = line.match(/\*\s+\[(.*?)\]\((.*?)\)/);
 
     if (match) {

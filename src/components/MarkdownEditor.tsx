@@ -1,6 +1,6 @@
 import React from "react";
 import { useMarkdownStore } from "../store";
-import BrowserOnly from "@docusaurus/BrowserOnly";
+import { useNotification } from "./NotificationSystem";
 
 const MarkdownEditor: React.FC = () => {
   const {
@@ -11,51 +11,38 @@ const MarkdownEditor: React.FC = () => {
     currentFile,
   } = useMarkdownStore();
 
+  const { addNotification } = useNotification();
+
   const handleSave = () => {
     saveLocalEdit();
+    addNotification("Document saved locally", "success");
   };
 
   const handleDiscard = () => {
     discardChanges();
+    addNotification("Changes discarded", "info");
   };
 
-  // We use BrowserOnly to ensure this component only renders in the browser
   return (
-    <BrowserOnly>
-      {() => {
-        // We'll use Monaco Editor for a rich editing experience
-        const MonacoEditor = require("@monaco-editor/react").default;
-
-        return (
-          <div className="editor-container">
-            <div className="editor-header">
-              <h2>Editing: {currentFile?.name}</h2>
-              <div className="editor-actions">
-                <button className="save-button" onClick={handleSave}>
-                  Save Locally
-                </button>
-                <button className="discard-button" onClick={handleDiscard}>
-                  Discard Changes
-                </button>
-              </div>
-            </div>
-            <MonacoEditor
-              height="70vh"
-              language="markdown"
-              theme="vs-dark"
-              value={editContent}
-              onChange={updateEditContent}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                wordWrap: "on",
-                scrollBeyondLastLine: false,
-              }}
-            />
-          </div>
-        );
-      }}
-    </BrowserOnly>
+    <div className="editor-container">
+      <div className="editor-header">
+        <h2>Editing: {currentFile?.name}</h2>
+        <div className="editor-actions">
+          <button className="save-button" onClick={handleSave}>
+            Save Locally
+          </button>
+          <button className="discard-button" onClick={handleDiscard}>
+            Discard Changes
+          </button>
+        </div>
+      </div>
+      <textarea
+        className="editor-textarea"
+        value={editContent}
+        onChange={(e) => updateEditContent(e.target.value)}
+        rows={20}
+      />
+    </div>
   );
 };
 

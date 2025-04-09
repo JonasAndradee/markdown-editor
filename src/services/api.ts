@@ -1,27 +1,21 @@
 import axios from "axios";
-import { BitbucketResponse, BitbucketFile } from "../types";
+import { BitbucketFile } from "../types";
 
-// Bitbucket API constants
 const WORKSPACE = "allintra";
 const REPO_SLUG = "teste-front-end";
 const BRANCH = "main";
 const BASE_PATH = "/docs";
 const BASE_URL = `https://api.bitbucket.org/2.0/repositories/${WORKSPACE}/${REPO_SLUG}`;
 
-// Simulated token - in a real app, this would be handled securely
-// For this test, we'll use mock responses to simulate the API
 const mockToken = "mock_token";
 
-// Create axios instance
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
-    Authorization: `Bearer ${mockToken}`,
     Accept: "application/json",
   },
 });
 
-// Intercept requests to simulate API responses in development
 api.interceptors.request.use(
   (config) => {
     if (process.env.NODE_ENV === "development") {
@@ -32,7 +26,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// List all files in a directory
 export const listFiles = async (
   path: string = BASE_PATH
 ): Promise<BitbucketFile[]> => {
@@ -45,7 +38,6 @@ export const listFiles = async (
   }
 };
 
-// Get file content
 export const getFileContent = async (path: string): Promise<string> => {
   try {
     const response = await api.get(`/src/${BRANCH}${path}`, {
@@ -60,7 +52,6 @@ export const getFileContent = async (path: string): Promise<string> => {
   }
 };
 
-// Mock functions for development and testing
 function mockListFiles(path: string): BitbucketFile[] {
   if (path === "/docs") {
     return [
