@@ -22,7 +22,7 @@ const DiffViewer: React.FC<DiffViewerProps> = ({ localEdit }) => {
             <div className="diff-columns">
               <div className="diff-column">
                 <div className="diff-header">Original Document</div>
-                <pre className="diff-content">
+                <pre>
                   {differences.map((part, index) => {
                     if (!part.added) {
                       return (
@@ -43,7 +43,7 @@ const DiffViewer: React.FC<DiffViewerProps> = ({ localEdit }) => {
 
               <div className="diff-column">
                 <div className="diff-header">Modified Document</div>
-                <pre className="diff-content">
+                <pre>
                   {differences.map((part, index) => {
                     if (!part.removed) {
                       return (

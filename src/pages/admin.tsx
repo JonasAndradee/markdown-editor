@@ -3,6 +3,8 @@ import Layout from "@theme/Layout";
 import { useMarkdownStore } from "@site/src/store";
 import { useHistory } from "@docusaurus/router";
 import { formatDate } from "@site/src/utils/markdown";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import DiffViewer from "../components/DiffViewer";
 
 export default function Admin() {
   const { localEdits, fetchLocalEdits } = useMarkdownStore();
@@ -16,6 +18,41 @@ export default function Admin() {
     const docPath = path.replace("/docs/", "").replace(".md", "");
 
     history.push(`/?doc=${docPath}`);
+  };
+
+  const renderDiffViewer = (
+    originalContent: string,
+    modifiedContent: string
+  ) => {
+    return (
+      <BrowserOnly>
+        {() => {
+          const { createTwoFilesPatch } = require("diff");
+          const patch = createTwoFilesPatch(
+            "Original",
+            "Modified",
+            originalContent,
+            modifiedContent
+          );
+
+          return (
+            <pre className="diff-view">
+              {patch.split("\n").map((line: string, i: number) => {
+                let className = "";
+                if (line.startsWith("+")) className = "diff-added";
+                if (line.startsWith("-")) className = "diff-removed";
+
+                return (
+                  <div key={i} className={className}>
+                    {line}
+                  </div>
+                );
+              })}
+            </pre>
+          );
+        }}
+      </BrowserOnly>
+    );
   };
 
   const handleShowChanges = (edit) => {
@@ -81,7 +118,8 @@ export default function Admin() {
                   <div className="diff-header">
                     <h4>Mudanças</h4>
                   </div>
-                  <div className="diff-content">
+                  <DiffViewer localEdit={edit} />
+                  {/* <div className="diff-content">
                     <div className="original-content">
                       <h5>Original</h5>
                       <pre>{edit.originalContent}</pre>
@@ -90,7 +128,7 @@ export default function Admin() {
                       <h5>Modificado</h5>
                       <pre>{edit.content}</pre>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}

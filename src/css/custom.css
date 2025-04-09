@@ -444,8 +444,9 @@
 }
 
 .diff-removed {
-  background-color: rgba(231, 76, 60, 0.15);
+  background-color: rgba(255, 0, 0, 0.1);
   text-decoration: line-through;
+  padding: 2px;
 }
 
 .diff-unchanged {

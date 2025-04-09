@@ -15,24 +15,24 @@ const MarkdownEditor: React.FC = () => {
 
   const handleSave = () => {
     saveLocalEdit();
-    addNotification("Document saved locally", "success");
+    addNotification("Documento salvo localmente", "success");
   };
 
   const handleDiscard = () => {
     discardChanges();
-    addNotification("Changes discarded", "info");
+    addNotification("Mudanças descartadas", "info");
   };
 
   return (
     <div className="editor-container">
       <div className="editor-header">
-        <h2>Editing: {currentFile?.name}</h2>
+        <h2>Editando: {currentFile?.name}</h2>
         <div className="editor-actions">
           <button className="save-button" onClick={handleSave}>
-            Save Locally
+            Salvar localmente
           </button>
           <button className="discard-button" onClick={handleDiscard}>
-            Discard Changes
+            Descartar mudanças
           </button>
         </div>
       </div>
